@@ -1,47 +1,38 @@
 import "./App.css";
-import { Box, Button } from "@mui/material";
+import {
+  Stack,
+  FormControl,
+  TextField,
+  FormHelperText,
+  Button,
+} from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
-import Ansi from "ansi-to-react";
 
 function App() {
   const ddClient = createDockerDesktopClient();
   const [dockerInfo, setDockerInfo] = useState("");
-  console.log("declaration", dockerInfo);
+  const [html, setHtml] = useState(null);
 
   async function runCommand(collectionID, environmentID, apiKey) {
     try {
       const results = await ddClient.docker.cli.exec("run", [
-        `-t`,
-        `postman/newman`,
-        `run`,
-        `https://api.getpostman.com/collections/${collectionID}${
+        ...["--entrypoint", "/bin/sh"],
+        ...["-t", "dannydainton/htmlextra"],
+        "-c",
+        `"newman run https://api.getpostman.com/collections/${collectionID}${
           apiKey && collectionID ? `?apikey=${apiKey}` : ""
-        }`,
-        `${
+        } ${
           environmentID
             ? `--environment https://api.getpostman.com/environments/${environmentID}`
             : ""
-        }${apiKey && environmentID ? `?apikey=${apiKey}` : ""}`,
-        `-r`,
-        `cli`,
+        }${
+          apiKey && environmentID ? `?apikey=${apiKey}` : ""
+        } -r htmlextra && cat newman/*.html"`,
       ]);
-      // const results = newman.run(
-      //   {
-      //     collection: `https://api.getpostman.com/collections/${collectionID}${
-      //       apiKey && collectionID ? `?apikey=${apiKey}` : ""
-      //     }`,
-      //     reporters: `cli,html`,
-      //   },
-      //   function (err) {
-      //     if (err) {
-      //       throw err;
-      //     }
-      //     console.log("collection run complete!");
-      //   }
-      // );
       console.log(results);
-      return results;
+      // return results;
+      setHtml(results.stdout);
     } catch (err) {
       console.log("command failed", err);
     }
@@ -59,8 +50,7 @@ function App() {
     if (collID) {
       try {
         const result = await runCommand(collID, envID, key);
-        console.log(result);
-        setDockerInfo(result.stdout);
+        setDockerInfo("");
       } catch (err) {
         console.log("command failed", err);
         setDockerInfo(err);
@@ -71,62 +61,68 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <Stack
+      display="flex"
+      flexGrow={1}
+      justifyContent="flex-start"
+      alignItems="center"
+      padding="20px"
+      height="calc(100vh - 60px)"
+    >
       <h1>Run Postman Collection</h1>
       <p>
         This desktop extension displays output from a Postman collection run.
       </p>
-      <Box
-        display="flex"
-        flexGrow={1}
-        justifyContent="center"
-        alignItems="start"
-        height="10vh"
-      >
+      <FormControl fullWidth margin="20px">
         <div>
-          <div>
-            <label htmlFor="collection">
-              Postman Collection ID (required):{" "}
-            </label>
-            <input
-              type="text"
-              id="collection"
-              name="collection"
-              required
-              placeholder="1559645-07137a33-d3d9-4362-afef-16daca946e03"
-            />
-          </div>
-          <div>
-            <label htmlFor="environment">
-              Postman Environment ID (optional):{" "}
-            </label>
-            <input type="text" id="environment" name="environment" />
-          </div>
-          <div>
-            <label htmlFor="apiKey">
-              Postman API key (required for non-public collections):{" "}
-            </label>
-            <input
-              type="text"
-              id="apiKey"
-              name="apiKey"
-              required
-              placeholder="PMAK-xxx-xxx"
-            />
-          </div>
+          <TextField
+            id="collection"
+            name="collection"
+            label="Postman Collection ID"
+            required
+            focused
+            fullWidth
+          />
+          <FormHelperText id="collection-helper-text">
+            e.g. 1559645-07137a33-d3d9-4362-afef-16daca946e03
+          </FormHelperText>
         </div>
-      </Box>
+        <div>
+          <TextField
+            id="environment"
+            name="environment"
+            label="Postman Environment ID"
+            focused
+            fullWidth
+          />
+          <FormHelperText id="environment-helper-text">
+            e.g. 4946945-c0c950a2-f17e-4c4b-8ea0-8b79066428a1
+          </FormHelperText>
+        </div>
+        <div>
+          <TextField
+            id="apiKey"
+            name="apiKey"
+            label="Postman API Key"
+            focused
+            fullWidth
+          />
+          <FormHelperText id="apikey-helper-text">
+            e.g. PMAK-xxx-xxx. Required for non-public collections.
+          </FormHelperText>
+        </div>
+      </FormControl>
       <Button id="submit" variant="contained" onClick={submitButton}>
         Run Collection
       </Button>
-      {dockerInfo ? (
-        <div id="run-results">
-          <Ansi>{dockerInfo}</Ansi>
-        </div>
-      ) : (
-        ""
-      )}
-    </div>
+      {dockerInfo ? <div id="run-results">{dockerInfo}</div> : null}
+      {html ? (
+        <iframe
+          id="html-results"
+          src={"data:text/html," + encodeURIComponent(html)}
+        ></iframe>
+      ) : null}
+    </Stack>
   );
 }
 
