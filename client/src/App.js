@@ -1,5 +1,5 @@
 import "./App.css";
-import { Stack, FormControl, TextField, Button } from "@mui/material";
+import { Stack, FormControl, TextField, Button, MenuItem } from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 
@@ -7,8 +7,9 @@ function App() {
   const ddClient = createDockerDesktopClient();
   const [dockerInfo, setDockerInfo] = useState(null);
   const [html, setHtml] = useState(null);
-  const [collectionError, setCollectionError] = useState(null);
-  const [environmentError, setEnvironmentError] = useState(null);
+  const [postmanInfo, setPostmanInfo] = useState(null);
+  const [selectedCollection, setSelectedCollection] = useState(null);
+  const [selectedEnvironment, setSelectedEnvironment] = useState(null);
   const [apikeyError, setApikeyError] = useState(null);
 
   async function runCommand(collectionID, environmentID, apiKey) {
@@ -17,14 +18,10 @@ function App() {
         ...["--entrypoint", "/bin/sh"],
         ...["-t", "dannydainton/htmlextra"],
         "-c",
-        `"newman run https://api.getpostman.com/collections/${collectionID}${
-          apiKey && collectionID ? `?apikey=${apiKey}` : ""
-        } ${
+        `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} ${
           environmentID
-            ? `--environment https://api.getpostman.com/environments/${environmentID}`
+            ? `--environment https://api.getpostman.com/environments/${environmentID}?apikey=${apiKey}`
             : ""
-        }${
-          apiKey && environmentID ? `?apikey=${apiKey}` : ""
         } -r htmlextra &> /dev/null && cat newman/*.html"`,
       ]);
       console.log(results);
@@ -35,22 +32,6 @@ function App() {
     }
   }
 
-  const validateCollError = () => {
-    let collID = document.getElementById("collection-input").value || null;
-    setCollectionError(null);
-    if (!collID || !(18 < collID.length) || !(collID.length < 50)) {
-      setCollectionError("Please enter a collection ID");
-    }
-  };
-
-  const validateEnvError = () => {
-    let envID = document.getElementById("environment-input").value || null;
-    setEnvironmentError(null);
-    if (envID && (!(18 < envID.length) || !(envID.length < 50))) {
-      setEnvironmentError("Please enter an environment ID");
-    }
-  };
-
   const validateApikeyError = () => {
     let key =
       document.getElementById("apikey-input").value ||
@@ -58,33 +39,103 @@ function App() {
     setApikeyError(null);
     if (key && key.toUpperCase().slice(0, 4) !== "PMAK") {
       setApikeyError("Please enter a valid Postman API key");
+    } else {
     }
   };
 
-  // TODO - input API key to return collections in dropdown selector
+  const getPostmanCollections = async () => {
+    try {
+      let myHeaders = new Headers();
+      myHeaders.append(
+        "X-API-Key",
+        document.getElementById("apikey-input").value ||
+          "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b"
+      );
+
+      let requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      return fetch(
+        "https://api.getpostman.com/collections",
+        requestOptions
+      ).then((response) => response.json());
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getPostmanEnvironments = async () => {
+    try {
+      let myHeaders = new Headers();
+      myHeaders.append(
+        "X-API-Key",
+        document.getElementById("apikey-input").value ||
+          "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b"
+      );
+
+      let requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      return fetch(
+        "https://api.getpostman.com/environments",
+        requestOptions
+      ).then((response) => response.json());
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getPostmanEntities = async () => {
+    try {
+      const collections = await getPostmanCollections();
+      const environments = await getPostmanEnvironments();
+      setPostmanInfo({
+        collections: collections.collections,
+        environments: environments.environments,
+        apikey:
+          document.getElementById("apikey-input").value ||
+          "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b",
+      });
+    } catch (err) {
+      console.log("Get Postman entities failed", err);
+      setDockerInfo(err.stdout);
+    }
+  };
+
+  // TODO store API key in local storage
+  // TODO handle errors in collection runs
 
   const submitButton = async () => {
-    let collID =
-      document.getElementById("collection-input").value ||
-      "1559645-07137a33-d3d9-4362-afef-16daca946e03";
-    // TODO remove default value  || "1559645-07137a33-d3d9-4362-afef-16daca946e03"
-    let envID = document.getElementById("environment-input").value || null;
-    // "13191452-5ea0722b-359b-460f-841b-0665d22cbcba" TODO remove default value
-    let key =
-      document.getElementById("apikey-input").value ||
-      "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b";
-    // this is a sample API key for accessing public collections
+    // let collID =
+    //   document.getElementById("collection-select").value ||
+    //   "1559645-07137a33-d3d9-4362-afef-16daca946e03";
+    // // TODO remove default value  || "1559645-07137a33-d3d9-4362-afef-16daca946e03"
+    // let envID = document.getElementById("environment-select").value || null;
+    // // "13191452-5ea0722b-359b-460f-841b-0665d22cbcba" TODO remove default value
+    // let key =
+    //   document.getElementById("apikey-input").value ||
+    //   "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b";
+    // // this is a sample API key for accessing public collections
 
-    if (!collectionError && !environmentError && !apikeyError) {
-      setDockerInfo(`running ...`);
-      setHtml(null);
-      try {
-        const result = await runCommand(collID, envID, key);
-        setDockerInfo(null);
-      } catch (err) {
-        console.log("command failed", err);
-        setDockerInfo(err.stdout);
-      }
+    let collID = selectedCollection;
+    let envID = selectedEnvironment;
+    let key = postmanInfo.apikey;
+    // console.log(collID, envID, key);
+
+    setDockerInfo(`running ...`);
+    setHtml(null);
+    try {
+      const result = await runCommand(collID, envID, key);
+      setDockerInfo(null);
+    } catch (err) {
+      console.log("command failed", err);
+      setDockerInfo(err.stdout);
     }
   };
 
@@ -96,7 +147,112 @@ function App() {
       alignItems="center"
       height="calc(100vh - 60px)"
     >
-      {html ? (
+      {!html ? (
+        <>
+          <FormControl fullWidth>
+            <h1 style={{ marginBottom: 2 }}>Run Postman Collection</h1>
+            <p style={{ marginBottom: 10 }}>
+              This desktop extension displays output from a Postman collection
+              run.
+            </p>
+            {!postmanInfo ? (
+              <>
+                <TextField
+                  id="apikey-input"
+                  label={[
+                    "Enter a ",
+                    <a
+                      href="https://go.postman.co/settings/me/api-keys"
+                      style={{ color: "rgb(25, 118, 210)" }}
+                    >
+                      Postman API key
+                    </a>,
+                    " to retrieve your collections.",
+                  ]}
+                  placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
+                  error={apikeyError}
+                  helperText={apikeyError ? apikeyError : ""}
+                  onBlur={() => validateApikeyError()}
+                  focused
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <Button
+                  id="getPostman"
+                  variant="contained"
+                  onClick={() => getPostmanEntities()}
+                  sx={{ mb: 2 }}
+                >
+                  Get Postman Collections
+                </Button>
+              </>
+            ) : (
+              <>
+                <FormControl fullWidth margin="20px" variant="outlined">
+                  {postmanInfo.collections.length > 0 ? (
+                    <>
+                      <TextField
+                        value={selectedCollection}
+                        onChange={(e) => setSelectedCollection(e.target.value)}
+                        select
+                        label="Select a collection"
+                        sx={{ mb: 2 }}
+                      >
+                        {postmanInfo.collections.map((coll) => (
+                          <MenuItem value={coll.uid}>{coll.name}</MenuItem>
+                        ))}
+                      </TextField>
+                    </>
+                  ) : (
+                    <>
+                      <TextField
+                        select
+                        label="No collections found"
+                        sx={{ mb: 2 }}
+                      ></TextField>
+                    </>
+                  )}
+
+                  {postmanInfo.environments.length > 0 ? (
+                    <>
+                      <TextField
+                        value={selectedEnvironment}
+                        onChange={(e) => setSelectedEnvironment(e.target.value)}
+                        select
+                        label="Select an environment"
+                        sx={{ mb: 2 }}
+                      >
+                        {postmanInfo.environments.map((env) => (
+                          <MenuItem value={env.uid}>{env.name}</MenuItem>
+                        ))}
+                      </TextField>
+                    </>
+                  ) : (
+                    <>
+                      <TextField
+                        select
+                        label="No environments found"
+                        sx={{ mb: 2 }}
+                      ></TextField>
+                    </>
+                  )}
+                </FormControl>
+                {selectedCollection ? (
+                  <Button
+                    id="submit"
+                    variant="contained"
+                    onClick={submitButton}
+                    sx={{ mb: 2 }}
+                  >
+                    Run Collection
+                  </Button>
+                ) : null}
+                {dockerInfo ? <div id="run-status">{dockerInfo}</div> : null}
+              </>
+            )}
+          </FormControl>
+        </>
+      ) : (
         <>
           <h1 style={{ marginBottom: 2 }}>Postman Results</h1>
           <p style={{ marginBottom: 10 }}>
@@ -117,57 +273,6 @@ function App() {
             style={{ border: "none" }}
           ></iframe>
         </>
-      ) : (
-        <FormControl fullWidth margin="20px">
-          <h1 style={{ marginBottom: 2 }}>Run Postman Collection</h1>
-          <p style={{ marginBottom: 10 }}>
-            This desktop extension displays output from a Postman collection
-            run.
-          </p>
-          <TextField
-            id="collection-input"
-            label="Postman Collection ID"
-            placeholder="e.g. 1559645-07137a33-d3d9-4362-afef-16daca946e03"
-            error={collectionError}
-            helperText={collectionError ? collectionError : ""}
-            onBlur={() => validateCollError()}
-            required
-            focused
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            id="environment-input"
-            label="Postman Environment ID"
-            placeholder="e.g. 4946945-c0c950a2-f17e-4c4b-8ea0-8b79066428a1"
-            error={environmentError}
-            helperText={environmentError ? environmentError : ""}
-            onBlur={() => validateEnvError()}
-            focused
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            id="apikey-input"
-            label="Postman API Key"
-            placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
-            error={apikeyError}
-            helperText={apikeyError ? apikeyError : ""}
-            onBlur={() => validateApikeyError()}
-            focused
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <Button
-            id="submit"
-            variant="contained"
-            onClick={submitButton}
-            sx={{ mb: 2 }}
-          >
-            Run Collection
-          </Button>
-          {dockerInfo ? <div id="run-status">{dockerInfo}</div> : null}
-        </FormControl>
       )}
     </Stack>
   );
