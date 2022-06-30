@@ -10,6 +10,7 @@ function App() {
   const [postmanInfo, setPostmanInfo] = useState(null);
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [selectedEnvironment, setSelectedEnvironment] = useState(null);
+  const [apikey, setApikey] = useState(null);
   const [apikeyError, setApikeyError] = useState(null);
 
   async function runCommand(collectionID, environmentID, apiKey) {
@@ -36,21 +37,19 @@ function App() {
     let key =
       document.getElementById("apikey-input").value ||
       "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b";
+    // this is a sample API key for accessing public collections
     setApikeyError(null);
     if (key && key.toUpperCase().slice(0, 4) !== "PMAK") {
       setApikeyError("Please enter a valid Postman API key");
     } else {
+      setApikey(key);
     }
   };
 
   const getPostmanCollections = async () => {
     try {
       let myHeaders = new Headers();
-      myHeaders.append(
-        "X-API-Key",
-        document.getElementById("apikey-input").value ||
-          "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b"
-      );
+      myHeaders.append("X-API-Key", apikey);
 
       let requestOptions = {
         method: "GET",
@@ -70,11 +69,7 @@ function App() {
   const getPostmanEnvironments = async () => {
     try {
       let myHeaders = new Headers();
-      myHeaders.append(
-        "X-API-Key",
-        document.getElementById("apikey-input").value ||
-          "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b"
-      );
+      myHeaders.append("X-API-Key", apikey);
 
       let requestOptions = {
         method: "GET",
@@ -98,9 +93,7 @@ function App() {
       setPostmanInfo({
         collections: collections.collections,
         environments: environments.environments,
-        apikey:
-          document.getElementById("apikey-input").value ||
-          "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b",
+        apikey: apikey,
       });
     } catch (err) {
       console.log("Get Postman entities failed", err);
@@ -112,20 +105,9 @@ function App() {
   // TODO handle errors in collection runs
 
   const submitButton = async () => {
-    // let collID =
-    //   document.getElementById("collection-select").value ||
-    //   "1559645-07137a33-d3d9-4362-afef-16daca946e03";
-    // // TODO remove default value  || "1559645-07137a33-d3d9-4362-afef-16daca946e03"
-    // let envID = document.getElementById("environment-select").value || null;
-    // // "13191452-5ea0722b-359b-460f-841b-0665d22cbcba" TODO remove default value
-    // let key =
-    //   document.getElementById("apikey-input").value ||
-    //   "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b";
-    // // this is a sample API key for accessing public collections
-
     let collID = selectedCollection;
     let envID = selectedEnvironment;
-    let key = postmanInfo.apikey;
+    let key = apikey;
     // console.log(collID, envID, key);
 
     setDockerInfo(`running ...`);
@@ -182,6 +164,7 @@ function App() {
                   variant="contained"
                   onClick={() => getPostmanEntities()}
                   sx={{ mb: 2 }}
+                  disabled={!apikey}
                 >
                   Get Postman Collections
                 </Button>
