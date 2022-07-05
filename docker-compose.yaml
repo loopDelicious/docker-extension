@@ -1,3 +1,8 @@
 services:
   newman-extension:
     image: ${DESKTOP_PLUGIN_IMAGE}
+    volumes:
+      - template:/tmp
+
+volumes:
+  template:

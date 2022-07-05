@@ -16,10 +16,15 @@ function App() {
   async function runCommand(collectionID, environmentID, apiKey) {
     try {
       const results = await ddClient.docker.cli.exec("run", [
+        "--rm",
         ...["--entrypoint", "/bin/sh"],
-        ...["-t", "dannydainton/htmlextra"],
+        ...[
+          "-v",
+          "joycelin79_newman-extension-desktop-extension_template:/tmp",
+        ],
+        "dannydainton/htmlextra",
         "-c",
-        `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} ${
+        `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} --reporter-htmlextra-template=/tmp/file.hbs ${
           environmentID
             ? `--environment https://api.getpostman.com/environments/${environmentID}?apikey=${apiKey}`
             : ""
@@ -28,8 +33,8 @@ function App() {
       console.log(results);
       setHtml(results.stdout);
     } catch (err) {
-      console.log("command failed", err);
-      setDockerInfo(err.stdout);
+      console.log("ddclient command failed", err);
+      setDockerInfo(`ddclient command failed: ` + err.cmd);
     }
   }
 
@@ -97,7 +102,7 @@ function App() {
       });
     } catch (err) {
       console.log("Get Postman entities failed", err);
-      setDockerInfo(err.stdout);
+      // setDockerInfo(err.stdout);
     }
   };
 
@@ -114,10 +119,10 @@ function App() {
     setHtml(null);
     try {
       const result = await runCommand(collID, envID, key);
-      setDockerInfo(null);
+      // setDockerInfo(null);
     } catch (err) {
-      console.log("command failed", err);
-      setDockerInfo(err.stdout);
+      console.log("run command failed", err);
+      setDockerInfo(err);
     }
   };
 
