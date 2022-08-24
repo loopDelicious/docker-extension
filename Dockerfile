@@ -14,7 +14,7 @@ RUN npm install --production
 COPY client /app/client
 RUN --mount=type=cache,target=/usr/local/share/.cache/npm-${TARGETARCH} \
     npm run build
-COPY client/src/file.hbs /tmp/file.hbs
+# COPY htmlreporter-with-template/file.hbs /tmp/file.hbs
 
 # FROM alpine
 LABEL org.opencontainers.image.title="Docker disk usage" \

@@ -18,14 +18,14 @@ function App() {
       const results = await ddClient.docker.cli.exec("run", [
         "--rm",
         ...["--entrypoint", "/bin/sh"],
-        // ...["-v", "joycelin79_newman-extension-desktop-extension:/tmp"],
-        "joycelin79/htmlextra",
+        ...["-v", "joycelin79_newman-extension-desktop-extension:/tmp"],
+        "joycelin79/htmlreporter-with-template",
         "-c",
-        `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} --reporter-htmlextra-template=/file.hbs ${
+        `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} ${
           environmentID
             ? `--environment https://api.getpostman.com/environments/${environmentID}?apikey=${apiKey}`
             : ""
-        } -r htmlextra"`,
+        } -r htmlextra --reporter-htmlextra-template /file.hbs"`,
       ]);
       console.log(results);
       setHtml(results.stdout);
