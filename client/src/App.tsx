@@ -1,4 +1,4 @@
-import {Stack, FormControl, TextField, Button, MenuItem, Typography} from "@mui/material";
+import { Stack, FormControl, TextField, Button, MenuItem, Typography, Link, Alert, debounce } from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 import { Header } from "./Header";
@@ -35,11 +35,7 @@ function App() {
     }
   }
 
-  const validateApikeyError = () => {
-    let key =
-      document.getElementById("apikey-input").value ||
-      "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b";
-    // this is a sample API key for accessing public collections
+  const validateApikeyError = (key: string) => {
     setApikeyError(null);
     if (key && key.toUpperCase().slice(0, 4) !== "PMAK") {
       setApikeyError("Please enter a valid Postman API key");
@@ -128,8 +124,6 @@ function App() {
       display="flex"
       flexGrow={1}
       justifyContent="flex-start"
-      alignItems="center"
-      height="calc(100vh - 60px)"
     >
       <Header/>
       {!html ? (
@@ -143,13 +137,17 @@ function App() {
                     "Postman API key",
                   ]}
                   placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
-                  error={apikeyError}
+                  error={!!apikeyError}
                   helperText={apikeyError ? apikeyError : ""}
-                  onBlur={() => validateApikeyError()}
+                  onChange={(e) => {
+                    validateApikeyError(e.target.value);
+                  }}
                   focused
                   fullWidth
-                  sx={{ mb: 2 }}
                 />
+                <Alert severity="info" sx={{ marginY: 2 }}>
+                  Find you Postman API key in <Link href="#" onClick={() => ddClient.host.openExternal('https://go.postman.co/settings/me/api-keys')}>your settings</Link> or use 'PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b' to access public collections.
+                </Alert>
                 <Button
                   id="getPostman"
                   variant="contained"
@@ -159,6 +157,7 @@ function App() {
                 >
                   Get Postman Collections
                 </Button>
+
               </>
             ) : (
               <>
