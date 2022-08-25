@@ -1,21 +1,12 @@
 {
   "name": "newman-extension",
-  "provider": "Docker Inc.",
-  "icon": "docker.svg",
-  "vm": {
-    "composefile": "docker-compose.yaml",
-    "exposes": {
-      "socket": "extension-newman-extension.sock"
-    }
-  },
+  "provider": "Postman",
+  "icon": "postman.svg",
   "ui": {
     "dashboard-tab": {
-      "title": "Newman-Extension",
+      "title": "Newman",
       "src": "index.html",
-      "root": "ui",
-      "backend": {
-        "socket": "extension-newman-extension.sock"
-      }
+      "root": "ui"
     }
   }
 }
