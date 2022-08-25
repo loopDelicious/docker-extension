@@ -1,9 +1,7 @@
-import "./App.css";
-import { Stack, FormControl, TextField, Button, MenuItem } from "@mui/material";
+import { Stack, FormControl, TextField, Button, MenuItem, Typography, Link, Alert, debounce } from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
-// import { BrowserWindow, shell } from "electron";
-// const { BrowserWindow, shell } = require("electron");
+import { Header } from "./Header";
 
 function App() {
   const ddClient = createDockerDesktopClient();
@@ -37,11 +35,7 @@ function App() {
     }
   }
 
-  const validateApikeyError = () => {
-    let key =
-      document.getElementById("apikey-input").value ||
-      "PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b";
-    // this is a sample API key for accessing public collections
+  const validateApikeyError = (key: string) => {
     setApikeyError(null);
     if (key && key.toUpperCase().slice(0, 4) !== "PMAK") {
       setApikeyError("Please enter a valid Postman API key");
@@ -55,7 +49,7 @@ function App() {
       let myHeaders = new Headers();
       myHeaders.append("X-API-Key", apikey);
 
-      let requestOptions = {
+      let requestOptions: RequestInit = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
@@ -75,7 +69,7 @@ function App() {
       let myHeaders = new Headers();
       myHeaders.append("X-API-Key", apikey);
 
-      let requestOptions = {
+      let requestOptions: RequestInit = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
@@ -155,41 +149,30 @@ function App() {
       display="flex"
       flexGrow={1}
       justifyContent="flex-start"
-      alignItems="center"
-      height="calc(100vh - 60px)"
     >
+      <Header/>
       {!html ? (
         <>
-          <FormControl fullWidth>
-            <h1 style={{ marginBottom: 2 }}>Run Postman Collection</h1>
-            <p style={{ marginBottom: 10 }}>
-              This desktop extension displays output from a Postman collection
-              run.
-            </p>
+          <FormControl fullWidth sx={{ marginTop: 2 }}>
             {!postmanInfo ? (
               <>
                 <TextField
                   id="apikey-input"
                   label={[
-                    "Enter a ",
-                    <a
-                      href="https://go.postman.co/settings/me/api-keys"
-                      style={{ color: "rgb(25, 118, 210)" }}
-                      // onClick={() => openLink()}
-                      // target="_blank"
-                    >
-                      Postman API key
-                    </a>,
-                    " to retrieve your collections.",
+                    "Postman API key",
                   ]}
                   placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
-                  error={apikeyError}
+                  error={!!apikeyError}
                   helperText={apikeyError ? apikeyError : ""}
-                  onBlur={() => validateApikeyError()}
+                  onChange={(e) => {
+                    validateApikeyError(e.target.value);
+                  }}
                   focused
                   fullWidth
-                  sx={{ mb: 2 }}
                 />
+                <Alert severity="info" sx={{ marginY: 2 }}>
+                  Find you Postman API key in <Link href="#" onClick={() => ddClient.host.openExternal('https://go.postman.co/settings/me/api-keys')}>your settings</Link> or use 'PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b' to access public collections.
+                </Alert>
                 <Button
                   id="getPostman"
                   variant="contained"
@@ -199,10 +182,11 @@ function App() {
                 >
                   Get Postman Collections
                 </Button>
+
               </>
             ) : (
               <>
-                <FormControl fullWidth margin="20px" variant="outlined">
+                <FormControl fullWidth sx={{ margin: "20px" }} variant="outlined">
                   {postmanInfo.collections.length > 0 ? (
                     <>
                       <TextField
@@ -268,11 +252,6 @@ function App() {
         </>
       ) : (
         <>
-          <h1 style={{ marginBottom: 2 }}>Postman Results</h1>
-          <p style={{ marginBottom: 10 }}>
-            This desktop extension displays output from a Postman collection
-            run.
-          </p>
           <Button
             id="run-new"
             variant="contained"
@@ -282,6 +261,8 @@ function App() {
             Run New Collection
           </Button>
           <iframe
+            width="100%"
+            height="100%"
             id="html-results"
             src={"data:text/html," + encodeURIComponent(html)}
             style={{ border: "none" }}

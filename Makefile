@@ -7,7 +7,7 @@ BUILDER=buildx-multi-arch
 INFO_COLOR = \033[0;36m
 NO_COLOR   = \033[m
 
-build: ## Build service image to be deployed as a desktop extension
+build-extension: ## Build service image to be deployed as a desktop extension
 	docker build --tag=$(IMAGE):$(TAG) .
 
 install: build-extension ## Install the extension
