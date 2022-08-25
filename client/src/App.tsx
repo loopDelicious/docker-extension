@@ -1,5 +1,5 @@
 import "./App.css";
-import { Stack, FormControl, TextField, Button, MenuItem } from "@mui/material";
+import {Stack, FormControl, TextField, Button, MenuItem, Typography} from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 
@@ -133,25 +133,31 @@ function App() {
     >
       {!html ? (
         <>
-          <FormControl fullWidth>
-            <h1 style={{ marginBottom: 2 }}>Run Postman Collection</h1>
-            <p style={{ marginBottom: 10 }}>
-              This desktop extension displays output from a Postman collection
-              run.
-            </p>
+          <Typography
+              variant="body1"
+              sx={{
+                fontSize: '20px',
+                whiteSpace: 'nowrap',
+                fontWeight: (theme) => theme.typography.fontWeightBold,
+              }}
+          >
+            Run Postman Collection
+          </Typography>
+          <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ marginTop: (theme) => theme.spacing(1) }}
+          >
+            This desktop extension displays output from a Postman collection run.
+          </Typography>
+
+          <FormControl fullWidth sx={{ marginTop: 2 }}>
             {!postmanInfo ? (
               <>
                 <TextField
                   id="apikey-input"
                   label={[
-                    "Enter a ",
-                    <a
-                      href="https://go.postman.co/settings/me/api-keys"
-                      style={{ color: "rgb(25, 118, 210)" }}
-                    >
-                      Postman API key
-                    </a>,
-                    " to retrieve your collections.",
+                    "Postman API key",
                   ]}
                   placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
                   error={apikeyError}
