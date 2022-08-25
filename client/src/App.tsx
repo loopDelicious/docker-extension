@@ -1,7 +1,7 @@
-import "./App.css";
 import {Stack, FormControl, TextField, Button, MenuItem, Typography} from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { Header } from "./Header";
 
 function App() {
   const ddClient = createDockerDesktopClient();
@@ -53,7 +53,7 @@ function App() {
       let myHeaders = new Headers();
       myHeaders.append("X-API-Key", apikey);
 
-      let requestOptions = {
+      let requestOptions: RequestInit = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
@@ -73,7 +73,7 @@ function App() {
       let myHeaders = new Headers();
       myHeaders.append("X-API-Key", apikey);
 
-      let requestOptions = {
+      let requestOptions: RequestInit = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
@@ -131,26 +131,9 @@ function App() {
       alignItems="center"
       height="calc(100vh - 60px)"
     >
+      <Header/>
       {!html ? (
         <>
-          <Typography
-              variant="body1"
-              sx={{
-                fontSize: '20px',
-                whiteSpace: 'nowrap',
-                fontWeight: (theme) => theme.typography.fontWeightBold,
-              }}
-          >
-            Run Postman Collection
-          </Typography>
-          <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ marginTop: (theme) => theme.spacing(1) }}
-          >
-            This desktop extension displays output from a Postman collection run.
-          </Typography>
-
           <FormControl fullWidth sx={{ marginTop: 2 }}>
             {!postmanInfo ? (
               <>
@@ -179,7 +162,7 @@ function App() {
               </>
             ) : (
               <>
-                <FormControl fullWidth margin="20px" variant="outlined">
+                <FormControl fullWidth sx={{ margin: "20px" }} variant="outlined">
                   {postmanInfo.collections.length > 0 ? (
                     <>
                       <TextField
@@ -245,11 +228,6 @@ function App() {
         </>
       ) : (
         <>
-          <h1 style={{ marginBottom: 2 }}>Postman Results</h1>
-          <p style={{ marginBottom: 10 }}>
-            This desktop extension displays output from a Postman collection
-            run.
-          </p>
           <Button
             id="run-new"
             variant="contained"
@@ -259,6 +237,8 @@ function App() {
             Run New Collection
           </Button>
           <iframe
+            width="100%"
+            height="100%"
             id="html-results"
             src={"data:text/html," + encodeURIComponent(html)}
             style={{ border: "none" }}
