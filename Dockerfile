@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/usr/src/app/.npm \
 
 COPY client /ui
 RUN npm run build
-COPY client/src/file.hbs /tmp/file.hbs
+# COPY client/src/file.hbs /tmp/file.hbs
 
 FROM alpine
 LABEL org.opencontainers.image.title="Newman" \
@@ -21,5 +21,5 @@ LABEL org.opencontainers.image.title="Newman" \
 
 COPY docker-compose.yaml .
 COPY metadata.json .
-COPY postman.svg .
+COPY icon-newman-drk.svg .
 COPY --from=client-builder /ui/dist ui

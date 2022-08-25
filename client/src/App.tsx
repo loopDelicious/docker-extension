@@ -13,6 +13,8 @@ function App() {
   const [apikey, setApikey] = useState(null);
   const [apikeyError, setApikeyError] = useState(null);
 
+  // sample API key: PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b
+
   async function runCommand(collectionID, environmentID, apiKey) {
     try {
       const results = await ddClient.docker.cli.exec("run", [
@@ -119,31 +121,6 @@ function App() {
     }
   };
 
-  // const openLink = () => {
-  //   let url = "https://go.postman.co/settings/me/api-keys";
-  //   const win = new BrowserWindow({ width: 800, height: 600 });
-  //   win.loadURL(url);
-
-  //   // const win = new BrowserWindow({
-  //   //   width: 1280,
-  //   //   height: 720,
-  //   //   webPreferences: {
-  //   //     nodeIntegration: true,
-  //   //     preload: __dirname + "/preload.js",
-  //   //   },
-  //   // });
-  //   // win.loadURL(url);
-  //   // win.webContents.setWindowOpenHandler(({ e }) => {
-  //   //   e.preventDefault();
-  //   //   shell.openExternal(url);
-  //   //   return { action: "deny" };
-  //   // });
-  //   // mainWindow.webContents.on("new-window", function (e, url) {
-  //   //   e.preventDefault();
-  //   //   require("electron").shell.openExternal(url);
-  //   // });
-  // };
-
   return (
     <Stack
       display="flex"
@@ -171,7 +148,7 @@ function App() {
                   fullWidth
                 />
                 <Alert severity="info" sx={{ marginY: 2 }}>
-                  Find you Postman API key in <Link href="#" onClick={() => ddClient.host.openExternal('https://go.postman.co/settings/me/api-keys')}>your settings</Link> or use 'PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b' to access public collections.
+                  Find your Postman API key in <Link href="#" onClick={() => ddClient.host.openExternal('https://go.postman.co/settings/me/api-keys')}>your Postman settings</Link>.
                 </Alert>
                 <Button
                   id="getPostman"

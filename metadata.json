@@ -1,7 +1,7 @@
 {
   "name": "newman-extension",
   "provider": "Postman",
-  "icon": "postman.svg",
+  "icon": "icon-newman-drk.svg",
   "ui": {
     "dashboard-tab": {
       "title": "Newman",
