@@ -2,6 +2,8 @@ import "./App.css";
 import { Stack, FormControl, TextField, Button, MenuItem } from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
+// import { BrowserWindow, shell } from "electron";
+// const { BrowserWindow, shell } = require("electron");
 
 function App() {
   const ddClient = createDockerDesktopClient();
@@ -123,6 +125,31 @@ function App() {
     }
   };
 
+  // const openLink = () => {
+  //   let url = "https://go.postman.co/settings/me/api-keys";
+  //   const win = new BrowserWindow({ width: 800, height: 600 });
+  //   win.loadURL(url);
+
+  //   // const win = new BrowserWindow({
+  //   //   width: 1280,
+  //   //   height: 720,
+  //   //   webPreferences: {
+  //   //     nodeIntegration: true,
+  //   //     preload: __dirname + "/preload.js",
+  //   //   },
+  //   // });
+  //   // win.loadURL(url);
+  //   // win.webContents.setWindowOpenHandler(({ e }) => {
+  //   //   e.preventDefault();
+  //   //   shell.openExternal(url);
+  //   //   return { action: "deny" };
+  //   // });
+  //   // mainWindow.webContents.on("new-window", function (e, url) {
+  //   //   e.preventDefault();
+  //   //   require("electron").shell.openExternal(url);
+  //   // });
+  // };
+
   return (
     <Stack
       display="flex"
@@ -148,6 +175,8 @@ function App() {
                     <a
                       href="https://go.postman.co/settings/me/api-keys"
                       style={{ color: "rgb(25, 118, 210)" }}
+                      // onClick={() => openLink()}
+                      // target="_blank"
                     >
                       Postman API key
                     </a>,

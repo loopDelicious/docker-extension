@@ -1,7 +1,7 @@
 {
   "name": "newman-extension",
   "provider": "Docker Inc.",
-  "icon": "docker.svg",
+  "icon": "icon-newman-drk.svg",
   "vm": {
     "composefile": "docker-compose.yaml",
     "exposes": {
@@ -10,7 +10,7 @@
   },
   "ui": {
     "dashboard-tab": {
-      "title": "Newman-Extension",
+      "title": "Newman",
       "src": "index.html",
       "root": "ui",
       "backend": {
