@@ -1,4 +1,4 @@
-import { Stack, FormControl, TextField, Button, MenuItem, Typography, Link, Alert, debounce } from "@mui/material";
+import { Stack, FormControl, TextField, Button, MenuItem, Typography, Link, Alert, debounce, Box } from "@mui/material";
 import React, { useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 import { Header } from "./Header";
@@ -31,6 +31,7 @@ function App() {
       ]);
       console.log(results);
       setHtml(results.stdout);
+      setDockerInfo(null);
     } catch (err) {
       console.log("ddclient command failed", err);
       setDockerInfo(`ddclient command failed: ` + err.cmd);
@@ -126,125 +127,124 @@ function App() {
       display="flex"
       flexGrow={1}
       justifyContent="flex-start"
+      height="100%"
     >
       <Header/>
       {!html ? (
         <>
-          <FormControl fullWidth sx={{ marginTop: 2 }}>
-            {!postmanInfo ? (
-              <>
-                <TextField
-                  id="apikey-input"
-                  label={[
-                    "Postman API key",
-                  ]}
-                  placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
-                  error={!!apikeyError}
-                  helperText={apikeyError ? apikeyError : ""}
-                  onChange={(e) => {
-                    validateApikeyError(e.target.value);
-                  }}
-                  focused
-                  fullWidth
-                />
-                <Alert severity="info" sx={{ marginY: 2 }}>
-                  Find your Postman API key in <Link href="#" onClick={() => ddClient.host.openExternal('https://go.postman.co/settings/me/api-keys')}>your Postman settings</Link>.
-                </Alert>
+          {!postmanInfo ? (
+            <>
+              <TextField
+                id="apikey-input"
+                label={[
+                  "Postman API key",
+                ]}
+                placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
+                error={!!apikeyError}
+                helperText={apikeyError ? apikeyError : ""}
+                onChange={(e) => {
+                  validateApikeyError(e.target.value);
+                }}
+                focused
+                fullWidth
+              />
+              <Alert severity="info" sx={{ marginY: 2 }}>
+                Find your Postman API key in <Link href="#" onClick={() => ddClient.host.openExternal('https://go.postman.co/settings/me/api-keys')}>your Postman settings</Link>.
+              </Alert>
+              <Button
+                id="getPostman"
+                variant="contained"
+                onClick={() => getPostmanEntities()}
+                sx={{ mb: 2 }}
+                disabled={!apikey}
+              >
+                Get Postman Collections
+              </Button>
+
+            </>
+          ) : (
+            <>
+                {postmanInfo.collections.length > 0 ? (
+                  <>
+                    <TextField
+                      value={selectedCollection}
+                      onChange={(e) => setSelectedCollection(e.target.value)}
+                      select
+                      label="Select a collection"
+                      sx={{ mb: 2 }}
+                    >
+                      {postmanInfo.collections.map((coll) => (
+                        <MenuItem value={coll.uid}>{coll.name}</MenuItem>
+                      ))}
+                    </TextField>
+                  </>
+                ) : (
+                  <>
+                    <TextField
+                      select
+                      label="No collections found"
+                      sx={{ mb: 2 }}
+                    ></TextField>
+                  </>
+                )}
+
+                {postmanInfo.environments.length > 0 ? (
+                  <>
+                    <TextField
+                      value={selectedEnvironment}
+                      onChange={(e) => setSelectedEnvironment(e.target.value)}
+                      select
+                      label="Select an environment"
+                      sx={{ mb: 2 }}
+                    >
+                      {postmanInfo.environments.map((env) => (
+                        <MenuItem value={env.uid}>{env.name}</MenuItem>
+                      ))}
+                    </TextField>
+                  </>
+                ) : (
+                  <>
+                    <TextField
+                      select
+                      label="No environments found"
+                      sx={{ mb: 2 }}
+                    ></TextField>
+                  </>
+                )}
+              {selectedCollection ? (
                 <Button
-                  id="getPostman"
+                  id="submit"
                   variant="contained"
-                  onClick={() => getPostmanEntities()}
+                  onClick={submitButton}
                   sx={{ mb: 2 }}
-                  disabled={!apikey}
                 >
-                  Get Postman Collections
+                  Run Collection
                 </Button>
-
-              </>
-            ) : (
-              <>
-                <FormControl fullWidth sx={{ margin: "20px" }} variant="outlined">
-                  {postmanInfo.collections.length > 0 ? (
-                    <>
-                      <TextField
-                        value={selectedCollection}
-                        onChange={(e) => setSelectedCollection(e.target.value)}
-                        select
-                        label="Select a collection"
-                        sx={{ mb: 2 }}
-                      >
-                        {postmanInfo.collections.map((coll) => (
-                          <MenuItem value={coll.uid}>{coll.name}</MenuItem>
-                        ))}
-                      </TextField>
-                    </>
-                  ) : (
-                    <>
-                      <TextField
-                        select
-                        label="No collections found"
-                        sx={{ mb: 2 }}
-                      ></TextField>
-                    </>
-                  )}
-
-                  {postmanInfo.environments.length > 0 ? (
-                    <>
-                      <TextField
-                        value={selectedEnvironment}
-                        onChange={(e) => setSelectedEnvironment(e.target.value)}
-                        select
-                        label="Select an environment"
-                        sx={{ mb: 2 }}
-                      >
-                        {postmanInfo.environments.map((env) => (
-                          <MenuItem value={env.uid}>{env.name}</MenuItem>
-                        ))}
-                      </TextField>
-                    </>
-                  ) : (
-                    <>
-                      <TextField
-                        select
-                        label="No environments found"
-                        sx={{ mb: 2 }}
-                      ></TextField>
-                    </>
-                  )}
-                </FormControl>
-                {selectedCollection ? (
-                  <Button
-                    id="submit"
-                    variant="contained"
-                    onClick={submitButton}
-                    sx={{ mb: 2 }}
-                  >
-                    Run Collection
-                  </Button>
-                ) : null}
-                {dockerInfo ? <div id="run-status">{dockerInfo}</div> : null}
-              </>
-            )}
-          </FormControl>
+              ) : null}
+              {dockerInfo ? <div id="run-status">{dockerInfo}</div> : null}
+            </>
+          )}
         </>
       ) : (
-        <>
+        <Stack direction="column" height="100%">
           <Button
             id="run-new"
             variant="contained"
             onClick={() => setHtml(null)}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, flex: 0 }}
           >
             Run New Collection
           </Button>
-          <iframe
-            width="100%"
-            height="100%"
-            id="html-results"
-            src={"data:text/html," + encodeURIComponent(html)}
-            style={{ border: "none" }}
-          ></iframe>
-        </>
+          <Box flex={1}>
+            <iframe
+              width="100%"
+              height="100%"
+              id="html-results"
+              src={"data:text/html," + encodeURIComponent(html)}
+              style={{ border: "none" }}
+            />
+          </Box>
+        </Stack>
       )}
     </Stack>
   );
