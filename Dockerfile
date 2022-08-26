@@ -16,8 +16,13 @@ FROM alpine
 LABEL org.opencontainers.image.title="Newman" \
     org.opencontainers.image.description="Run your Postman collection from Docker Desktop" \
     org.opencontainers.image.vendor="Postman" \
-    com.docker.desktop.extension.api.version=">= 0.2.0" \
-    com.docker.desktop.extension.icon="https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png"
+    com.docker.desktop.extension.api.version=">= 0.0.1" \
+    com.docker.desktop.extension.icon="https://voyager.postman.com/icon/icon-newman-monochrome.svg" \
+    com.docker.extension.screenshots='[{"alt":"Add Postman API key", "url":"https://i.imgur.com/xF9jECq.png"},{"alt":"Select Postman collection to run", "url":"https://i.imgur.com/Zm5CT5M.png"},{"alt":"View collection run results", "url":"https://user-images.githubusercontent.com/212269/186909437-107c65db-93b1-4a8c-8f32-bb1271b0dfa0.png"}]' \
+    com.docker.extension.detailed-description="<h1>Newman</h1><p>The Postman extension uses Newman to run collections on Docker Desktop. View results of your API tests in a staging or production environment.</p>" \
+    com.docker.extension.publisher-url="https://www.postman.com" \
+    com.docker.extension.additional-urls='[{"title":"Privacy Policy","url":"https://www.postman.com/legal/privacy-policy"},{"title":"Terms of Service","url":"https://www.postman.com/legal/terms"}]' \
+    com.docker.extension.changelog="<ul><li>Added metadata to provide more information about the extension.</li></ul>"
 
 COPY docker-compose.yaml .
 COPY metadata.json .
