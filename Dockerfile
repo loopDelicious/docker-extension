@@ -21,5 +21,5 @@ LABEL org.opencontainers.image.title="Newman" \
 
 COPY docker-compose.yaml .
 COPY metadata.json .
-COPY icon-newman-drk.svg .
+COPY icon-newman-docker.svg .
 COPY --from=client-builder /ui/dist ui
