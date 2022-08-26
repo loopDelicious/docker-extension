@@ -361,9 +361,9 @@ body.theme-light code {
     color: #000000!important;
 }
 .text-wrap {
-    word-wrap: break-word; 
-    min-width: 600px; 
-    max-width: 600px; 
+    word-wrap: break-word;
+    min-width: 600px;
+    max-width: 600px;
     white-space: normal;
 }
 </style>
@@ -1175,24 +1175,6 @@ body.theme-light code {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 {{/eq}}
-
-<!-- Set slider initial position depending on the localstorage state -->
-
-<script>
-(function () {
-  var sliderChecked = true;
-  if (localStorage.getItem('theme') === 'theme-light') {
-    setTheme('theme-light');
-    sliderChecked = false;
-  } else {
-    setTheme('theme-dark');
-    sliderChecked = true;
-  }
-  $(document).ready( function () {
-    document.getElementById('slider').checked = sliderChecked;
-  });
-})();
-</script>
 
 <!-- Data Table Configuration -->
 
