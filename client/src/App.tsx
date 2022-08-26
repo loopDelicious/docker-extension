@@ -21,13 +21,13 @@ function App() {
         "--rm",
         ...["--entrypoint", "/bin/sh"],
         ...["-v", "joycelin79_newman-extension-desktop-extension:/tmp"],
-        "joycelin79/htmlreporter-with-template",
+        "joycelin79/htmlreporter-with-template:latest",
         "-c",
         `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} ${
           environmentID
             ? `--environment https://api.getpostman.com/environments/${environmentID}?apikey=${apiKey}`
             : ""
-        } -r htmlextra --reporter-htmlextra-template /file.hbs"`,
+        } -r htmlextra --reporter-htmlextra-template /file.hbs; cat ./newman/*.html"`,
       ]);
       console.log(results);
       setHtml(results.stdout);
