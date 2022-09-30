@@ -1,6 +1,6 @@
 # Postman Docker extension
 
-This Docker Desktop Extension runs Postman collections using Postman's open-source CLI, [Newman](https://hub.docker.com/r/postman/newman/) image. Run your API tests or execute an API workflow in any server environment. Then review the results of the collection run.
+This Docker Desktop Extension runs Postman collections using Postman's open-source CLI, [Newman](https://hub.docker.com/r/postman/newman/) image and Danny Dainton's [HTMLextra](https://github.com/DannyDainton/newman-reporter-htmlextra) reporter. Run your API tests or execute an API workflow in any server environment. Then review the results of the collection run.
 
 - Enter a Postman API key to retrieve your Postman data
 - Select a collection to run, and optionally select an environment to run with the collection
