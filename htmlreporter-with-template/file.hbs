@@ -111,6 +111,12 @@ body.theme-dark .card-header {
 body.theme-light .card-header {
     background-color: #f7f7f7;
 }
+body.theme-docker-dark .card-header {
+    background-color: #222;
+}
+body.theme-docker-light .card-header {
+    background-color: #f9f9fa;
+}
 .card-footer {
     padding: .75rem 1.25rem;
     background-color: var(--card-footer);
@@ -134,6 +140,9 @@ body.theme-light .card-header {
 body.theme-dark .text-white {
     color: #ccd2d9!important;
 }
+body.theme-docker-dark .text-white {
+    color: #ccd2d8!important;
+}
 h4 {
     color: var(--h4-text);
 }
@@ -144,6 +153,16 @@ body.theme-dark .bg-light>td {
     background: #4f5858!important;
 }
 body.theme-dark .hljs {
+    background: #0a0a0ab0!important;
+    color: #8d8787!important;
+}
+body.theme-docker-dark h1 {
+    color: #ccd2da;
+}
+body.theme-docker-dark .bg-light>td {
+    background: #4f5858!important;
+}
+body.theme-docker-dark .hljs {
     background: #0a0a0ab0!important;
     color: #8d8787!important;
 }
@@ -195,10 +214,41 @@ body.theme-light .bg-danger {
 body.theme-dark .bg-danger {
     background-color: var(--failure)!important;
 }
+
+
+
+body.theme-docker-dark .alert-dark {
+    background-color: #636467!important;
+}
+body.theme-docker-dark .text-dark {
+    color: #ccd2d9!important;
+}
+body.theme-docker-dark .badge-light {
+    color: #212529;
+    background-color: #ccd2d9;
+}
+body.theme-docker-light .badge-light {
+    color: #212529;
+    background-color: #ccd2d9;
+}
+body.theme-docker-light .bg-danger {
+    background-color: var(--failure)!important;
+}
+body.theme-docker-dark .bg-danger {
+    background-color: var(--failure)!important;
+}
+
+
+
 .table-danger>td {
     background-color: var(--failure-row);
 }
 body.theme-dark .table .thead-light th {
+    background-color: #4f5858!important;
+    border-color: #dee2e6!important;
+    color: #ccd2d8!important;
+}
+body.theme-docker-dark .table .thead-light th {
     background-color: #4f5858!important;
     border-color: #dee2e6!important;
     color: #ccd2d8!important;
@@ -250,6 +300,9 @@ body.theme-dark .table .thead-light th {
 body.theme-dark .env-heading {
     color: #ccd2d9!important;
 }
+body.theme-docker-dark .env-heading {
+    color: white!important;
+}
 body, html {
   height:100%;
 }
@@ -268,6 +321,26 @@ body.theme-dark .card-body .bg-danger {
 body.theme-light .card-body .bg-danger {
     background-color: var(--failure)!important;
 }
+
+
+
+body.theme-docker-dark .card-body {
+    background-color: #444;
+}
+body.theme-docker-light .card-body {
+    background-color: #f7f7f7;
+}
+body.theme-docker-dark .card-body .bg-danger {
+    background-color: var(--failure)!important;
+}
+body.theme-docker-light .card-body .bg-danger {
+    background-color: var(--failure)!important;
+}
+
+
+
+
+
 .card-body .rotate {
   z-index: 8;
   float: right;
@@ -400,6 +473,17 @@ body.theme-dark code {
 body.theme-light code {
     color: #000000!important;
 }
+
+
+body.theme-docker-dark code {
+    color: #ccd2d8!important;
+}
+body.theme-docker-light code {
+    color: #000000!important;
+}
+
+
+
 .text-wrap {
     word-wrap: break-word;
     min-width: 600px;
