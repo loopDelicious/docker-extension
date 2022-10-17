@@ -11,7 +11,6 @@ This Docker Desktop Extension runs Postman collections using Postman's open-sour
 - Run the collection, review the results of the API calls, and filter by failed tests
 
 ### Watch the demo
-
 [![Postman Docker extension demo](http://i3.ytimg.com/vi/ClBiZ7qSLcA/hqdefault.jpg)](https://youtu.be/ClBiZ7qSLcA)
 
 ### Pre-requisites
@@ -24,18 +23,22 @@ This Docker Desktop Extension runs Postman collections using Postman's open-sour
 This extension is not published yet, so build and deploy it locally from source code.
 
 ### Clone the project
+Run:
 
     git clone https://github.com/loopDelicious/docker-extension.git
 
 ### Change into the project directory
+Run:
 
     cd docker-extension
 
 ### Build and install the extension
+Run:
 
     make && make install
 
 ### Developing the frontend
+In your terminal, run individually one-by-one:
 
 ```
 cd client
@@ -55,4 +58,4 @@ In order to open the Chrome DevTools for your extension when you click on the ex
 
 ### Code of Conduct
 
-All are welcome to contribute to this project. Please follow the [Postman code of conduct](https://www.postman.com/legal/community-code-of-conduct), and don't be a jerk.
+Everyone is welcome to contribute to this project. Please follow the [Postman Code of Conduct](https://www.postman.com/legal/community-code-of-conduct), and don't be a jerk.
