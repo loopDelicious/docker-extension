@@ -37,10 +37,20 @@ Run:
 
     make && make install
 
+### Build the HTML reporter
+Change into the HTML reporter directory:
+
+    cd htmlreporter-with-template
+
+From inside the subdirectory, build the reporter image:
+
+    docker build -t joycelin79/htmlreporter-with-template:latest .
+
 ### Developing the frontend
 In your terminal, run individually one-by-one:
 
 ```
+cd ..
 cd client
 npm install
 npm start
