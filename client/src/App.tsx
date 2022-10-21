@@ -1,7 +1,8 @@
-import { Stack, FormControl, TextField, Button, MenuItem, Typography, Link, Alert, debounce, Box } from "@mui/material";
-import React, { useState } from "react";
+import { Stack, FormControl, TextField, Button, MenuItem, Typography, Link, Alert, debounce, Box, LinearProgress } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 import { Header } from "./Header";
+import { useApiContext } from "./ApiContext";
 
 function App() {
   const ddClient = createDockerDesktopClient();
@@ -11,6 +12,7 @@ function App() {
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [selectedEnvironment, setSelectedEnvironment] = useState(null);
   const [apikey, setApikey] = useState(null);
+  const {apiKey: apiKeyInContext, setApiKey: setApiKeyInContext} = useApiContext();
   const [apikeyError, setApikeyError] = useState(null);
 
   // sample API key: PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b
@@ -50,7 +52,7 @@ function App() {
   const getPostmanCollections = async () => {
     try {
       let myHeaders = new Headers();
-      myHeaders.append("X-API-Key", apikey);
+      myHeaders.append("X-API-Key", apiKeyInContext);
 
       let requestOptions: RequestInit = {
         method: "GET",
@@ -70,7 +72,7 @@ function App() {
   const getPostmanEnvironments = async () => {
     try {
       let myHeaders = new Headers();
-      myHeaders.append("X-API-Key", apikey);
+      myHeaders.append("X-API-Key", apiKeyInContext);
 
       let requestOptions: RequestInit = {
         method: "GET",
@@ -86,6 +88,13 @@ function App() {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (apiKeyInContext) {
+      getPostmanEntities();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiKeyInContext])
 
   const getPostmanEntities = async () => {
     try {
@@ -108,13 +117,12 @@ function App() {
   const submitButton = async () => {
     let collID = selectedCollection;
     let envID = selectedEnvironment;
-    let key = apikey;
     // console.log(collID, envID, key);
 
     setDockerInfo(`running ...`);
     setHtml(null);
     try {
-      const result = await runCommand(collID, envID, key);
+      const result = await runCommand(collID, envID, apiKeyInContext);
       // setDockerInfo(null);
     } catch (err) {
       console.log("run command failed", err);
@@ -132,7 +140,12 @@ function App() {
       <Header/>
       {!html ? (
         <>
-          {!postmanInfo ? (
+          {apiKeyInContext && !postmanInfo ? (
+            <Box mb={2} sx={{ width: '100%' }}>
+              <LinearProgress />
+            </Box>
+          ) : null}
+          {!apiKeyInContext || !postmanInfo ? (
             <>
               <TextField
                 id="apikey-input"
@@ -154,7 +167,7 @@ function App() {
               <Button
                 id="getPostman"
                 variant="contained"
-                onClick={() => getPostmanEntities()}
+                onClick={() => setApiKeyInContext(apikey)}
                 sx={{ mb: 2 }}
                 disabled={!apikey}
               >
@@ -164,7 +177,7 @@ function App() {
             </>
           ) : (
             <>
-                {postmanInfo.collections.length > 0 ? (
+                {postmanInfo?.collections?.length > 0 ? (
                   <>
                     <TextField
                       value={selectedCollection}
@@ -188,7 +201,7 @@ function App() {
                   </>
                 )}
 
-                {postmanInfo.environments.length > 0 ? (
+                {postmanInfo?.environments?.length > 0 ? (
                   <>
                     <TextField
                       value={selectedEnvironment}
