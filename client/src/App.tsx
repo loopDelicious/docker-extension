@@ -23,7 +23,7 @@ function App() {
         "--rm",
         ...["--entrypoint", "/bin/sh"],
         ...["-v", "joycelin79_newman-extension-desktop-extension:/tmp"],
-        "joycelin79/htmlreporter-with-template:latest",
+        "joycelin79/htmlreporter-with-template:0.0.1",
         "-c",
         `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} ${
           environmentID
