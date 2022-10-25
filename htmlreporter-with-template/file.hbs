@@ -542,24 +542,24 @@ body.theme-docker-light code {
 </head>
 <body>
 <script>
-    //const setTheme = (theme) => {
-    //    document.body.className = `theme-${theme}`
-    //}
+    const setTheme = (theme) => {
+        document.body.className = `theme-${theme}`
+    }
 
-    //if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    //    setTheme('dark');
-    //} else {
-    //    setTheme('light');
-    //}
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('docker-dark');
+    } else {
+        setTheme('docker-light');
+    }
 
 
     //const theme = 'docker-light';
-    const theme = 'docker-dark';
+    //const theme = 'docker-dark';
 
-    document.body.className = `theme-${theme}`;
+    //document.body.className = `theme-${theme}`;
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-        setTheme(event.matches ? "dark" : "light");
+        setTheme(event.matches ? "docker-dark" : "docker-light");
     });
 </script>
   <div class="container">
