@@ -50,6 +50,44 @@ code.renderMarkdown table, code.renderMarkdown th, code.renderMarkdown td {
     --hov-text: #fff;
     --h4-text: #ffffff;
 }
+.theme-docker-light{
+    --background-color: #f9f9fa;
+    --tab-border: solid 1px #fff;
+    --text-color: #000000;
+    --success: #2e7f74;
+    --failure: #d52536;
+    --warning: #b85504;
+    --info: #116ed0;
+    --badge-outline: #040411;
+    --badge-bg: #f8f9fa;
+    --badge-text: #fff;
+    --failure-row: #d52536;
+    --warning-row: #b85504;
+    --card-bg: #f7f7f7;
+    --hov-text: #677285;
+    --h4-text: #ffffff;
+}
+
+.theme-docker-dark{
+    --background-color: #222;
+    --bg-card-deck: #444444;
+    --text-color: #ccd2d8;
+    --tab-border: solid 1px #444;
+    --success: #228375;
+    --failure: #c32438;
+    --warning: #cd6a0a;
+    --info: #1277db;
+    --badge-outline: #3c9372;
+    --badge-bg: #cdd3db;
+    --badge-text: #ccd2d9;
+    --failure-row: #c32438;
+    --warning-row: #cd6a0a;
+    --card-bg: #444;
+    --card-footer: #4f5758;
+    --form-input: #ececb5;
+    --hov-text: #7794ab;
+    --h4-text: white;
+}
 body {
   padding-top:30px;
   background-color: var(--background-color)!important;
@@ -71,6 +109,21 @@ body.theme-dark .card-header {
 body.theme-light .card-header {
     background-color: #f7f7f7;
 }
+
+
+
+
+body.theme-docker-dark .card-header {
+    background-color: #222;
+}
+body.theme-docker-light .card-header {
+    background-color: #f9f9fa;
+}
+
+
+
+
+
 .card-footer {
     padding: .75rem 1.25rem;
     background-color: var(--card-footer);
@@ -94,6 +147,18 @@ body.theme-light .card-header {
 body.theme-dark .text-white {
     color: #ccd2d9!important;
 }
+
+
+
+
+body.theme-docker-dark .text-white {
+    color: #ccd2d8!important;
+}
+
+
+
+
+
 h4 {
     color: var(--h4-text);
 }
@@ -107,6 +172,25 @@ body.theme-dark .hljs {
     background: #0a0a0ab0!important;
     color: #8d8787!important;
 }
+
+
+
+
+body.theme-docker-dark h1 {
+    color: #ccd2da;
+}
+body.theme-docker-dark .bg-light>td {
+    background: #4f5858!important;
+}
+body.theme-docker-dark .hljs {
+    background: #0a0a0ab0!important;
+    color: #8d8787!important;
+}
+
+
+
+
+
 .bg-info {
     background-color: var(--info)!important;
 }
@@ -155,6 +239,35 @@ body.theme-light .bg-danger {
 body.theme-dark .bg-danger {
     background-color: var(--failure)!important;
 }
+
+
+
+body.theme-docker-dark .alert-dark {
+    background-color: #636467!important;
+}
+body.theme-docker-dark .text-dark {
+    color: #ccd2d9!important;
+}
+body.theme-docker-dark .badge-light {
+    color: #212529;
+    background-color: #ccd2d9;
+}
+body.theme-docker-light .badge-light {
+    color: #212529;
+    background-color: #ccd2d9;
+}
+body.theme-docker-light .bg-danger {
+    background-color: var(--failure)!important;
+}
+body.theme-docker-dark .bg-danger {
+    background-color: var(--failure)!important;
+}
+
+
+
+
+
+
 .table-danger>td {
     background-color: var(--failure-row);
 }
@@ -167,6 +280,18 @@ body.theme-dark .table .thead-light th {
   background: var(--success);
   color: white;
 }
+
+
+
+body.theme-docker-dark .table .thead-light th {
+    background-color: #4f5858!important;
+    border-color: #dee2e6!important;
+    color: #ccd2d8!important;
+}
+
+
+
+
 .itFailed {
   background: var(--failure);
   color: white;
@@ -210,6 +335,16 @@ body.theme-dark .table .thead-light th {
 body.theme-dark .env-heading {
     color: #ccd2d9!important;
 }
+
+
+
+body.theme-docker-dark .env-heading {
+    color: white!important;
+}
+
+
+
+
 body, html {
   height:100%;
 }
@@ -228,6 +363,29 @@ body.theme-dark .card-body .bg-danger {
 body.theme-light .card-body .bg-danger {
     background-color: var(--failure)!important;
 }
+
+
+
+
+
+body.theme-docker-dark .card-body {
+    background-color: #444;
+}
+body.theme-docker-light .card-body {
+    background-color: #f7f7f7;
+}
+body.theme-docker-dark .card-body .bg-danger {
+    background-color: var(--failure)!important;
+}
+body.theme-docker-light .card-body .bg-danger {
+    background-color: var(--failure)!important;
+}
+
+
+
+
+
+
 .card-body .rotate {
   z-index: 8;
   float: right;
@@ -360,6 +518,20 @@ body.theme-dark code {
 body.theme-light code {
     color: #000000!important;
 }
+
+
+
+body.theme-docker-dark code {
+    color: #ccd2d8!important;
+}
+body.theme-docker-light code {
+    color: #000000!important;
+}
+
+
+
+
+
 .text-wrap {
     word-wrap: break-word;
     min-width: 600px;
@@ -375,13 +547,19 @@ body.theme-light code {
     }
 
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setTheme('dark');
+        setTheme('docker-dark');
     } else {
-        setTheme('light');
+        setTheme('docker-light');
     }
 
+
+    //const theme = 'docker-light';
+    //const theme = 'docker-dark';
+
+    //document.body.className = `theme-${theme}`;
+
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-        setTheme(event.matches ? "dark" : "light");
+        setTheme(event.matches ? "docker-dark" : "docker-light");
     });
 </script>
   <div class="container">
