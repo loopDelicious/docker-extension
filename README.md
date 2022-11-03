@@ -2,7 +2,7 @@
 
 This Docker Desktop Extension runs Postman collections using Postman's open-source CLI, [Newman](https://hub.docker.com/r/postman/newman/) image and Danny Dainton's [HTMLextra](https://github.com/DannyDainton/newman-reporter-htmlextra) reporter. Run your API tests or execute an API workflow in any server environment. Then review the results of the collection run.
 
-![Newman run results](https://user-images.githubusercontent.com/212269/186909437-107c65db-93b1-4a8c-8f32-bb1271b0dfa0.png)
+![Newman run results](./newmandocker.png)
 
 ### How it works
 
@@ -11,7 +11,10 @@ This Docker Desktop Extension runs Postman collections using Postman's open-sour
 - Run the collection, review the results of the API calls, and filter by failed tests
 
 ### Watch the demo
-[![Postman Docker extension demo](http://i3.ytimg.com/vi/ClBiZ7qSLcA/hqdefault.jpg)](https://youtu.be/ClBiZ7qSLcA)
+
+[![Postman Docker extension demo](http://i3.ytimg.com/vi/zPSWUe9gsUU/hqdefault.jpg)](https://youtu.be/zPSWUe9gsUU)
+
+# For local development
 
 ### Pre-requisites
 
@@ -23,21 +26,25 @@ This Docker Desktop Extension runs Postman collections using Postman's open-sour
 This extension is not published yet, so build and deploy it locally from source code.
 
 ### Clone the project
+
 Run:
 
     git clone https://github.com/loopDelicious/docker-extension.git
 
 ### Change into the project directory
+
 Run:
 
     cd docker-extension
 
 ### Build and install the extension
+
 Run:
 
     make && make install
 
 ### Build the HTML reporter
+
 Change into the HTML reporter directory:
 
     cd htmlreporter-with-template
@@ -47,6 +54,7 @@ From inside the subdirectory, build the reporter image:
     docker build -t joycelin79/htmlreporter-with-template:latest .
 
 ### Developing the frontend
+
 In your terminal, run individually one-by-one:
 
 ```
