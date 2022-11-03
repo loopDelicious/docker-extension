@@ -1,4 +1,16 @@
-import { Stack, FormControl, TextField, Button, MenuItem, Typography, Link, Alert, debounce, Box, LinearProgress } from "@mui/material";
+import {
+  Stack,
+  FormControl,
+  TextField,
+  Button,
+  MenuItem,
+  Typography,
+  Link,
+  Alert,
+  debounce,
+  Box,
+  LinearProgress,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 import { Header } from "./Header";
@@ -12,28 +24,68 @@ function App() {
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [selectedEnvironment, setSelectedEnvironment] = useState(null);
   const [apikey, setApikey] = useState(null);
-  const {apiKey: apiKeyInContext, setApiKey: setApiKeyInContext} = useApiContext();
+  const { apiKey: apiKeyInContext, setApiKey: setApiKeyInContext } =
+    useApiContext();
   const [apikeyError, setApikeyError] = useState(null);
 
   // sample API key: PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b
 
   async function runCommand(collectionID, environmentID, apiKey) {
     try {
-      const results = await ddClient.docker.cli.exec("run", [
-        "--rm",
-        ...["--entrypoint", "/bin/sh"],
-        ...["-v", "joycelin79_newman-extension-desktop-extension:/tmp"],
-        "joycelin79/htmlreporter-with-template:0.0.2",
-        "-c",
-        `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} ${
-          environmentID
-            ? `--environment https://api.getpostman.com/environments/${environmentID}?apikey=${apiKey}`
-            : ""
-        } -r htmlextra --reporter-htmlextra-template /file.hbs; cat ./newman/*.html"`,
-      ]);
-      console.log(results);
-      setHtml(results.stdout);
-      setDockerInfo(null);
+      try {
+        await ddClient.docker.cli.exec("run", [
+          "--rm",
+          ...["--entrypoint", "/bin/sh"],
+          ...["-v", "joycelin79_newman-extension-desktop-extension:/tmp"],
+          "joycelin79/htmlreporter-with-template:0.0.2",
+          "-c",
+          `"newman run https://api.getpostman.com/collections/${collectionID}?apikey=${apiKey} ${
+            environmentID
+              ? `--environment https://api.getpostman.com/environments/${environmentID}?apikey=${apiKey}`
+              : ""
+          } -r htmlextra --reporter-htmlextra-template /file.hbs --reporter-htmlextra-export /tmp/report.html"`,
+        ]);
+      } catch {
+        console.log("There are some errors in tests");
+      }
+
+      let results = "";
+
+      await ddClient.docker.cli.exec(
+        "run",
+        [
+          "--rm",
+          ...["--entrypoint", "cat"],
+          ...["-v", "joycelin79_newman-extension-desktop-extension:/tmp"],
+          "joycelin79/htmlreporter-with-template:0.0.2",
+          "/tmp/report.html",
+        ],
+        {
+          stream: {
+            onOutput(data) {
+              if (data.stdout) {
+                results += data.stdout;
+              } else {
+                console.log("Error while getting the output");
+                console.log(data.stderr);
+              }
+            },
+            onError(error) {
+              console.log("Error while getting the output");
+              console.log(error);
+            },
+            onClose(exitCode) {
+              if (exitCode != 0) {
+                console.log("Error getting the output, exit code " + exitCode);
+              } else {
+                setHtml(results);
+                setDockerInfo(null);
+              }
+            },
+            splitOutputLines: true,
+          },
+        }
+      );
     } catch (err) {
       console.log("ddclient command failed", err);
       setDockerInfo(`ddclient command failed: ` + err.cmd);
@@ -93,8 +145,8 @@ function App() {
     if (apiKeyInContext) {
       getPostmanEntities();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiKeyInContext])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiKeyInContext]);
 
   const getPostmanEntities = async () => {
     try {
@@ -137,11 +189,11 @@ function App() {
       justifyContent="flex-start"
       height="100%"
     >
-      <Header/>
+      <Header />
       {!html ? (
         <>
           {apiKeyInContext && !postmanInfo ? (
-            <Box mb={2} sx={{ width: '100%' }}>
+            <Box mb={2} sx={{ width: "100%" }}>
               <LinearProgress />
             </Box>
           ) : null}
@@ -149,9 +201,7 @@ function App() {
             <>
               <TextField
                 id="apikey-input"
-                label={[
-                  "Postman API key",
-                ]}
+                label={["Postman API key"]}
                 placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
                 error={!!apikeyError}
                 helperText={apikeyError ? apikeyError : ""}
@@ -162,7 +212,18 @@ function App() {
                 fullWidth
               />
               <Alert severity="info" sx={{ marginY: 2 }}>
-                Find your Postman API key in <Link href="#" onClick={() => ddClient.host.openExternal('https://go.postman.co/settings/me/api-keys')}>your Postman settings</Link>.
+                Find your Postman API key in{" "}
+                <Link
+                  href="#"
+                  onClick={() =>
+                    ddClient.host.openExternal(
+                      "https://go.postman.co/settings/me/api-keys"
+                    )
+                  }
+                >
+                  your Postman settings
+                </Link>
+                .
               </Alert>
               <Button
                 id="getPostman"
@@ -173,57 +234,56 @@ function App() {
               >
                 Get Postman Collections
               </Button>
-
             </>
           ) : (
             <>
-                {postmanInfo?.collections?.length > 0 ? (
-                  <>
-                    <TextField
-                      value={selectedCollection}
-                      onChange={(e) => setSelectedCollection(e.target.value)}
-                      select
-                      label="Select a collection"
-                      sx={{ mb: 2 }}
-                    >
-                      {postmanInfo.collections.map((coll) => (
-                        <MenuItem value={coll.uid}>{coll.name}</MenuItem>
-                      ))}
-                    </TextField>
-                  </>
-                ) : (
-                  <>
-                    <TextField
-                      select
-                      label="No collections found"
-                      sx={{ mb: 2 }}
-                    ></TextField>
-                  </>
-                )}
+              {postmanInfo?.collections?.length > 0 ? (
+                <>
+                  <TextField
+                    value={selectedCollection}
+                    onChange={(e) => setSelectedCollection(e.target.value)}
+                    select
+                    label="Select a collection"
+                    sx={{ mb: 2 }}
+                  >
+                    {postmanInfo.collections.map((coll) => (
+                      <MenuItem value={coll.uid}>{coll.name}</MenuItem>
+                    ))}
+                  </TextField>
+                </>
+              ) : (
+                <>
+                  <TextField
+                    select
+                    label="No collections found"
+                    sx={{ mb: 2 }}
+                  ></TextField>
+                </>
+              )}
 
-                {postmanInfo?.environments?.length > 0 ? (
-                  <>
-                    <TextField
-                      value={selectedEnvironment}
-                      onChange={(e) => setSelectedEnvironment(e.target.value)}
-                      select
-                      label="Select an environment"
-                      sx={{ mb: 2 }}
-                    >
-                      {postmanInfo.environments.map((env) => (
-                        <MenuItem value={env.uid}>{env.name}</MenuItem>
-                      ))}
-                    </TextField>
-                  </>
-                ) : (
-                  <>
-                    <TextField
-                      select
-                      label="No environments found"
-                      sx={{ mb: 2 }}
-                    ></TextField>
-                  </>
-                )}
+              {postmanInfo?.environments?.length > 0 ? (
+                <>
+                  <TextField
+                    value={selectedEnvironment}
+                    onChange={(e) => setSelectedEnvironment(e.target.value)}
+                    select
+                    label="Select an environment"
+                    sx={{ mb: 2 }}
+                  >
+                    {postmanInfo.environments.map((env) => (
+                      <MenuItem value={env.uid}>{env.name}</MenuItem>
+                    ))}
+                  </TextField>
+                </>
+              ) : (
+                <>
+                  <TextField
+                    select
+                    label="No environments found"
+                    sx={{ mb: 2 }}
+                  ></TextField>
+                </>
+              )}
               {selectedCollection ? (
                 <Button
                   id="submit"
@@ -253,7 +313,7 @@ function App() {
               width="100%"
               height="100%"
               id="html-results"
-              src={"data:text/html," + encodeURIComponent(html)}
+              srcDoc={html}
               style={{ border: "none" }}
             />
           </Box>
