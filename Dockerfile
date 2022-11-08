@@ -19,9 +19,9 @@ LABEL org.opencontainers.image.title="Newman" \
     com.docker.desktop.extension.api.version=">= 0.0.1" \
     com.docker.desktop.extension.icon="https://voyager.postman.com/icon/icon-newman-docker-postman.svg" \
     com.docker.extension.screenshots='[{"alt":"Add Postman API key", "url":"https://i.imgur.com/xF9jECq.png"},{"alt":"Select Postman collection to run", "url":"https://i.imgur.com/Zm5CT5M.png"},{"alt":"View collection run results", "url":"https://user-images.githubusercontent.com/212269/186909437-107c65db-93b1-4a8c-8f32-bb1271b0dfa0.png"}]' \
-    com.docker.extension.detailed-description="<h1>Newman</h1><p>The Postman extension uses Newman to run collections on Docker Desktop. View results of your API tests in a staging or production environment.</p>" \
+    com.docker.extension.detailed-description="<h1>Newman</h1><p>The Postman extension uses Newman to run collections on Docker Desktop. View results of your API tests in a staging or production environment.</p><h1>Known issues</h1><p>In some cases, depending on test collections and test results, some buttons (expand/colapse folder, copy/paste) might be inoperative.</p>" \
     com.docker.extension.publisher-url="https://www.postman.com" \
-    com.docker.extension.additional-urls='[{"title":"Privacy Policy","url":"https://www.postman.com/legal/privacy-policy"},{"title":"Terms of Service","url":"https://www.postman.com/legal/terms"}]' \
+    com.docker.extension.additional-urls='[{"title":"Github Repository","url":"https://github.com/loopDelicious/docker-extension"}, {"title":"Feedback and issues","url":"https://github.com/loopDelicious/docker-extension/issues"}, {"title":"Privacy Policy","url":"https://www.postman.com/legal/privacy-policy"},{"title":"Terms of Service","url":"https://www.postman.com/legal/terms"}]' \
     com.docker.extension.changelog="<ul><li>Added metadata to provide more information about the extension.</li></ul>"
 
 COPY docker-compose.yaml .
