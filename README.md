@@ -6,6 +6,8 @@ This Docker Desktop Extension runs Postman collections using Postman's open-sour
 
 ### How it works
 
+Install the Docker Desktop Newman extension: https://hub.docker.com/extensions/joycelin79/newman-extension
+
 - Enter a Postman API key to retrieve your Postman data
 - Select a collection to run, and optionally select an environment to run with the collection
 - Run the collection, review the results of the API calls, and filter by failed tests
