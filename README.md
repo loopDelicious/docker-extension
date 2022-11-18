@@ -12,6 +12,10 @@ Install the Docker Desktop Newman extension: https://hub.docker.com/extensions/j
 - Select a collection to run, and optionally select an environment to run with the collection
 - Run the collection, review the results of the API calls, and filter by failed tests
 
+### Read the blog announcement
+
+[Automate API Tests and Debug in Docker With Postman’s Newman Extension](https://www.docker.com/blog/automate-api-tests-and-debug-in-docker-with-postmans-newman-extension/)
+
 ### Watch the demo
 
 [![Postman Docker extension demo](http://i3.ytimg.com/vi/zPSWUe9gsUU/hqdefault.jpg)](https://youtu.be/zPSWUe9gsUU)
