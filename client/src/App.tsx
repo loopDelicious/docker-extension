@@ -2,7 +2,7 @@ import {
   Stack,
   FormControl,
   TextField,
-  Input,
+  OutlinedInput,
   InputLabel,
   InputAdornment,
   IconButton,
@@ -213,7 +213,7 @@ function App() {
             <>
               <FormControl fullWidth focused sx={{ marginY: 2 }}>
                 <InputLabel htmlFor="apikey-input">Postman API key</InputLabel>
-                <Input
+                <OutlinedInput
                   id="apikey-input"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
@@ -221,6 +221,7 @@ function App() {
                   onChange={(e) => {
                     validateApikeyError(e.target.value);
                   }}
+                  label="Postman API key"
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
