@@ -2,6 +2,10 @@ import {
   Stack,
   FormControl,
   TextField,
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  IconButton,
   Button,
   MenuItem,
   Typography,
@@ -10,7 +14,9 @@ import {
   debounce,
   Box,
   LinearProgress,
+  FormHelperText,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 import { Header } from "./Header";
@@ -27,6 +33,12 @@ function App() {
   const { apiKey: apiKeyInContext, setApiKey: setApiKeyInContext } =
     useApiContext();
   const [apikeyError, setApikeyError] = useState(null);
+
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   // sample API key: PMAK-6245dae283d9d36ec467cb18-d5a238ce70ed8161d502b30f1db056847b
 
@@ -199,18 +211,31 @@ function App() {
           ) : null}
           {!apiKeyInContext || !postmanInfo ? (
             <>
-              <TextField
-                id="apikey-input"
-                label={["Postman API key"]}
-                placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
-                error={!!apikeyError}
-                helperText={apikeyError ? apikeyError : ""}
-                onChange={(e) => {
-                  validateApikeyError(e.target.value);
-                }}
-                focused
-                fullWidth
-              />
+              <FormControl fullWidth focused sx={{ marginY: 2 }}>
+                <InputLabel htmlFor="apikey-input">Postman API key</InputLabel>
+                <OutlinedInput
+                  id="apikey-input"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="e.g. PMAK-xxx-xxxx-xxxx-xxxx"
+                  error={!!apikeyError}
+                  onChange={(e) => {
+                    validateApikeyError(e.target.value);
+                  }}
+                  label="Postman API key"
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              <FormHelperText>{apikeyError ? apikeyError : ""}</FormHelperText>
+            </FormControl>
               <Alert severity="info" sx={{ marginY: 2 }}>
                 Find your Postman API key in{" "}
                 <Link
